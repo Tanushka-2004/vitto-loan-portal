@@ -8,23 +8,35 @@ router.post('/', async (req, res) => {
   const { name, mobile, amount, purpose, language } = req.body;
 
   // Validation
-  if (!name || !mobile || !amount || !purpose || !language) {
-    return res.status(400).json({ 
-      error: 'All fields are required: name, mobile, amount, purpose, language' 
-    });
-  }
+ if (!name || !mobile || !amount || !purpose || !language) {
+  return res.status(400).json({ 
+    error: 'All fields are required' 
+  });
+}
 
-  if (!['Hindi', 'Tamil', 'Telugu', 'Marathi', 'English'].includes(language)) {
-    return res.status(400).json({ 
-      error: 'Language must be one of: Hindi, Tamil, Telugu, Marathi, English' 
-    });
-  }
+if (name.trim().length < 3) {
+  return res.status(400).json({ 
+    error: 'Name must be at least 3 characters' 
+  });
+}
 
-  if (isNaN(amount) || amount <= 0) {
-    return res.status(400).json({ 
-      error: 'Loan amount must be a positive number' 
-    });
-  }
+if (!/^\d{10}$/.test(mobile)) {
+  return res.status(400).json({ 
+    error: 'Invalid mobile number' 
+  });
+}
+
+if (isNaN(amount) || amount <= 0) {
+  return res.status(400).json({ 
+    error: 'Loan amount must be greater than 0' 
+  });
+}
+
+if (!['Hindi', 'Tamil', 'Telugu', 'Marathi', 'English'].includes(language)) {
+  return res.status(400).json({ 
+    error: 'Invalid language selected' 
+  });
+}
 
   try {
     const id = uuidv4();
